@@ -92,7 +92,7 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-myntra-purple to-myntra-pink bg-clip-text text-transparent">
-              MyMyntra
+              Myntra
             </h1>
           </Link>
 
