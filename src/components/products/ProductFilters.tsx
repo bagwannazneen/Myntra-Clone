@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
@@ -35,10 +34,10 @@ const ProductFilters = () => {
     { name: 'Grey', code: '#808080' },
   ];
   const priceRanges = [
-    { label: 'Under ₹500', range: [0, 500] },
-    { label: '₹500 - ₹1000', range: [500, 1000] },
-    { label: '₹1000 - ₹2000', range: [1000, 2000] },
-    { label: 'Above ₹2000', range: [2000, 10000] },
+    { label: 'Under ₹500', range: [0, 500] as [number, number] },
+    { label: '₹500 - ₹1000', range: [500, 1000] as [number, number] },
+    { label: '₹1000 - ₹2000', range: [1000, 2000] as [number, number] },
+    { label: 'Above ₹2000', range: [2000, 10000] as [number, number] },
   ];
   const sortOptions = [
     { label: 'Price: Low to High', value: 'price-asc' },

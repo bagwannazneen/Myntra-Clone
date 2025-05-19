@@ -15,10 +15,8 @@ gsap.registerPlugin(ScrollTrigger);
 const Index = () => {
   // Set up and clean up GSAP ScrollTrigger
   useEffect(() => {
-    // Re-register ScrollTrigger to ensure it's available
-    if (!ScrollTrigger.isRegistered()) {
-      gsap.registerPlugin(ScrollTrigger);
-    }
+    // Always register ScrollTrigger at the component level to ensure it's available
+    gsap.registerPlugin(ScrollTrigger);
     
     // Clean up ScrollTrigger instances when component unmounts
     return () => {
