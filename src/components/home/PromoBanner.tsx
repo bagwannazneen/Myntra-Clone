@@ -96,10 +96,10 @@ const PromoBanner = () => {
               </Link>
             </div>
             
-            {/* Image placeholder */}
+            {/* Image */}
             <div className="w-full md:w-1/3">
               <img 
-                src="/placeholder.svg" 
+                src="https://images.unsplash.com/photo-1519431940854-223d5da275e2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
                 alt="Summer Collection" 
                 className="w-full h-auto rounded-lg shadow-xl"
               />

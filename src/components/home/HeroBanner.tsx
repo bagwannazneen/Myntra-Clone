@@ -85,11 +85,11 @@ const HeroBanner = () => {
         >
           <div
             className="banner-image absolute inset-0 bg-cover bg-center z-0"
-            style={{ backgroundImage: `url(${banner.image})`, backgroundColor: '#f3f4f6' }}
+            style={{ backgroundImage: `url(${banner.image})` }}
           />
           
           {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent z-10"></div>
           
           {/* Content */}
           <div className="container mx-auto px-4 h-full flex items-center z-20 relative">
