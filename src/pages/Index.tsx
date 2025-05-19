@@ -1,13 +1,41 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useEffect } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Layout from '@/components/layout/Layout';
+import HeroBanner from '@/components/home/HeroBanner';
+import CategorySection from '@/components/home/CategorySection';
+import TrendingProducts from '@/components/home/TrendingProducts';
+import NewArrivals from '@/components/home/NewArrivals';
+import PromoBanner from '@/components/home/PromoBanner';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Index = () => {
+  useEffect(() => {
+    return () => {
+      // Clean up ScrollTrigger instances when component unmounts
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <Layout>
+      {/* Hero Banner */}
+      <HeroBanner />
+      
+      {/* Category Section */}
+      <CategorySection />
+      
+      {/* Trending Products */}
+      <TrendingProducts />
+      
+      {/* Promo Banner */}
+      <PromoBanner />
+      
+      {/* New Arrivals */}
+      <NewArrivals />
+    </Layout>
   );
 };
 
