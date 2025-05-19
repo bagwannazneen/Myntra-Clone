@@ -9,12 +9,19 @@ import TrendingProducts from '@/components/home/TrendingProducts';
 import NewArrivals from '@/components/home/NewArrivals';
 import PromoBanner from '@/components/home/PromoBanner';
 
+// Register GSAP ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
 const Index = () => {
+  // Set up and clean up GSAP ScrollTrigger
   useEffect(() => {
+    // Re-register ScrollTrigger to ensure it's available
+    if (!ScrollTrigger.isRegistered()) {
+      gsap.registerPlugin(ScrollTrigger);
+    }
+    
+    // Clean up ScrollTrigger instances when component unmounts
     return () => {
-      // Clean up ScrollTrigger instances when component unmounts
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);

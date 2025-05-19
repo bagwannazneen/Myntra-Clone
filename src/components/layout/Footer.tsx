@@ -1,11 +1,30 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectIsDarkMode } from '@/lib/store/themeSlice';
 
 const Footer = () => {
   const isDarkMode = useSelector(selectIsDarkMode);
+  const location = useLocation();
+  
+  // Helper function to create safe links
+  const SafeLink = ({ to, children, className }: { to: string; children: React.ReactNode; className?: string }) => {
+    // Use regular anchor for external links (starting with http)
+    if (to.startsWith('http') || to === '#') {
+      return (
+        <a href={to} className={className} target={to.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer">
+          {children}
+        </a>
+      );
+    }
+    // Use React Router Link for internal links
+    return (
+      <Link to={to} className={className}>
+        {children}
+      </Link>
+    );
+  };
   
   return (
     <footer className={`py-10 border-t theme-transition ${
@@ -17,11 +36,11 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold text-lg mb-4">Online Shopping</h3>
             <ul className="space-y-2">
-              <li><Link to="/products?category=Men" className="text-muted-foreground hover:text-primary transition-colors">Men</Link></li>
-              <li><Link to="/products?category=Women" className="text-muted-foreground hover:text-primary transition-colors">Women</Link></li>
-              <li><Link to="/products?category=Kids" className="text-muted-foreground hover:text-primary transition-colors">Kids</Link></li>
-              <li><Link to="/products?category=Accessories" className="text-muted-foreground hover:text-primary transition-colors">Accessories</Link></li>
-              <li><Link to="/products?category=Electronics" className="text-muted-foreground hover:text-primary transition-colors">Electronics</Link></li>
+              <li><SafeLink to="/products?category=Men" className="text-muted-foreground hover:text-primary transition-colors">Men</SafeLink></li>
+              <li><SafeLink to="/products?category=Women" className="text-muted-foreground hover:text-primary transition-colors">Women</SafeLink></li>
+              <li><SafeLink to="/products?category=Kids" className="text-muted-foreground hover:text-primary transition-colors">Kids</SafeLink></li>
+              <li><SafeLink to="/products?category=Accessories" className="text-muted-foreground hover:text-primary transition-colors">Accessories</SafeLink></li>
+              <li><SafeLink to="/products?category=Electronics" className="text-muted-foreground hover:text-primary transition-colors">Electronics</SafeLink></li>
             </ul>
           </div>
 
@@ -29,11 +48,11 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold text-lg mb-4">Customer Policies</h3>
             <ul className="space-y-2">
-              <li><Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">Contact Us</Link></li>
-              <li><Link to="/faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</Link></li>
-              <li><Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms & Conditions</Link></li>
-              <li><Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/shipping" className="text-muted-foreground hover:text-primary transition-colors">Shipping & Returns</Link></li>
+              <li><SafeLink to="/contact" className="text-muted-foreground hover:text-primary transition-colors">Contact Us</SafeLink></li>
+              <li><SafeLink to="/faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</SafeLink></li>
+              <li><SafeLink to="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms & Conditions</SafeLink></li>
+              <li><SafeLink to="/privacy" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</SafeLink></li>
+              <li><SafeLink to="/shipping" className="text-muted-foreground hover:text-primary transition-colors">Shipping & Returns</SafeLink></li>
             </ul>
           </div>
 
@@ -41,11 +60,11 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold text-lg mb-4">Shop By</h3>
             <ul className="space-y-2">
-              <li><Link to="/trending" className="text-muted-foreground hover:text-primary transition-colors">Trending</Link></li>
-              <li><Link to="/new-arrivals" className="text-muted-foreground hover:text-primary transition-colors">New Arrivals</Link></li>
-              <li><Link to="/products?sort=price-asc" className="text-muted-foreground hover:text-primary transition-colors">Price (Low to High)</Link></li>
-              <li><Link to="/products?sort=price-desc" className="text-muted-foreground hover:text-primary transition-colors">Price (High to Low)</Link></li>
-              <li><Link to="/products?sort=rating" className="text-muted-foreground hover:text-primary transition-colors">Customer Rating</Link></li>
+              <li><SafeLink to="/trending" className="text-muted-foreground hover:text-primary transition-colors">Trending</SafeLink></li>
+              <li><SafeLink to="/new-arrivals" className="text-muted-foreground hover:text-primary transition-colors">New Arrivals</SafeLink></li>
+              <li><SafeLink to="/products?sort=price-asc" className="text-muted-foreground hover:text-primary transition-colors">Price (Low to High)</SafeLink></li>
+              <li><SafeLink to="/products?sort=price-desc" className="text-muted-foreground hover:text-primary transition-colors">Price (High to Low)</SafeLink></li>
+              <li><SafeLink to="/products?sort=rating" className="text-muted-foreground hover:text-primary transition-colors">Customer Rating</SafeLink></li>
             </ul>
           </div>
 
@@ -67,15 +86,15 @@ const Footer = () => {
               </button>
             </form>
             <div className="mt-4 flex space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <SafeLink to="#" className="text-muted-foreground hover:text-primary transition-colors">
                 Facebook
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              </SafeLink>
+              <SafeLink to="#" className="text-muted-foreground hover:text-primary transition-colors">
                 Instagram
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              </SafeLink>
+              <SafeLink to="#" className="text-muted-foreground hover:text-primary transition-colors">
                 Twitter
-              </a>
+              </SafeLink>
             </div>
           </div>
         </div>
@@ -84,10 +103,10 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-muted-foreground text-sm">© 2025 MyMyntra. All rights reserved.</p>
             <div className="mt-4 md:mt-0 flex space-x-6">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Terms</a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Privacy</a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Security</a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Sitemap</a>
+              <SafeLink to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Terms</SafeLink>
+              <SafeLink to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Privacy</SafeLink>
+              <SafeLink to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Security</SafeLink>
+              <SafeLink to="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">Sitemap</SafeLink>
             </div>
           </div>
         </div>
