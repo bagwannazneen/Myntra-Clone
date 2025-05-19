@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
@@ -20,7 +21,9 @@ const ProductFilters = () => {
     sort: true,
   });
   
+  // Updated categories list with more specific options
   const categories = ['Men', 'Women', 'Kids', 'Sports', 'Accessories', 'Electronics'];
+  
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '30', '32', '34', '36', '38', '40'];
   const colors = [
     { name: 'Black', code: '#000000' },

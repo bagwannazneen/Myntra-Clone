@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { setFilter, selectProductsStatus, selectProductsError, fetchProductsAsync } from '@/lib/store/productSlice';
 import { gsap } from 'gsap';
@@ -13,23 +13,21 @@ import { useAppDispatch } from '@/lib/store';
 const Products = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const navigate = useNavigate();
   const pageRef = useRef<HTMLDivElement>(null);
   const status = useSelector(selectProductsStatus);
   const error = useSelector(selectProductsError);
   
-  // Fetch products if needed
+  // Fetch products if needed and handle URL parameters
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchProductsAsync());
     }
-  }, [status, dispatch]);
-  
-  // Parse query parameters from URL
-  useEffect(() => {
+    
+    // Parse query parameters from URL
     const params = new URLSearchParams(location.search);
     const category = params.get('category');
     const sort = params.get('sort') as 'price-asc' | 'price-desc' | 'rating' | null;
+    const searchQuery = params.get('search');
     
     if (category) {
       dispatch(setFilter({ filterType: 'category', value: category }));
@@ -38,8 +36,13 @@ const Products = () => {
     if (sort) {
       dispatch(setFilter({ filterType: 'sort', value: sort }));
     }
-  }, [location.search, dispatch]);
+    
+    if (searchQuery) {
+      dispatch(setFilter({ filterType: 'searchQuery', value: searchQuery }));
+    }
+  }, [location.search, dispatch, status]);
   
+  // GSAP animations
   useEffect(() => {
     if (pageRef.current) {
       const heading = pageRef.current.querySelector('h1');
@@ -61,6 +64,13 @@ const Products = () => {
     // Scroll to top on page load
     window.scrollTo(0, 0);
   }, []);
+
+  // Get current category from URL params for the header
+  const getCurrentCategory = () => {
+    const params = new URLSearchParams(location.search);
+    const category = params.get('category');
+    return category || 'All Products';
+  };
 
   if (status === 'loading') {
     return (
@@ -100,9 +110,11 @@ const Products = () => {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">All Products</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">{getCurrentCategory()}</h1>
             <p className="text-muted-foreground mx-auto max-w-xl">
-              Explore our wide selection of high-quality products
+              {getCurrentCategory() === 'All Products' 
+                ? 'Explore our wide selection of high-quality products'
+                : `Discover our latest ${getCurrentCategory()} collection crafted for style and comfort`}
             </p>
           </div>
           

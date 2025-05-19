@@ -1,3 +1,4 @@
+
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '.';
 import { fetchProducts, searchProductsApi } from '../services/api';
@@ -28,10 +29,10 @@ interface ProductState {
     size: string | null;
     color: string | null;
     sort: 'price-asc' | 'price-desc' | 'rating' | null;
+    searchQuery: string | null;
   };
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
-  searchQuery: string;
 }
 
 const initialState: ProductState = {
@@ -43,10 +44,10 @@ const initialState: ProductState = {
     size: null,
     color: null,
     sort: null,
+    searchQuery: null,
   },
   status: 'idle',
   error: null,
-  searchQuery: '',
 };
 
 // Async thunk for fetching products
@@ -87,10 +88,24 @@ const productSlice = createSlice({
       // Apply all current filters
       let filtered = state.items;
       
+      // Apply search query if exists
+      if (state.filters.searchQuery) {
+        const searchTerm = state.filters.searchQuery.toLowerCase();
+        filtered = filtered.filter(
+          product => 
+            product.name.toLowerCase().includes(searchTerm) || 
+            product.description.toLowerCase().includes(searchTerm) ||
+            product.brand.toLowerCase().includes(searchTerm) ||
+            product.category.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      // Apply category filter
       if (state.filters.category) {
         filtered = filtered.filter(item => item.category === state.filters.category);
       }
       
+      // Apply price range filter
       if (state.filters.priceRange) {
         filtered = filtered.filter(
           item => 
@@ -99,27 +114,17 @@ const productSlice = createSlice({
         );
       }
       
+      // Apply size filter
       if (state.filters.size) {
         filtered = filtered.filter(item => 
           item.sizes.includes(state.filters.size!)
         );
       }
       
+      // Apply color filter
       if (state.filters.color) {
         filtered = filtered.filter(item => 
           item.colors.some(c => c.name === state.filters.color)
-        );
-      }
-      
-      // Apply search query if exists
-      if (state.searchQuery) {
-        const searchTerm = state.searchQuery.toLowerCase();
-        filtered = filtered.filter(
-          product => 
-            product.name.toLowerCase().includes(searchTerm) || 
-            product.description.toLowerCase().includes(searchTerm) ||
-            product.brand.toLowerCase().includes(searchTerm) ||
-            product.category.toLowerCase().includes(searchTerm)
         );
       }
       
@@ -142,29 +147,18 @@ const productSlice = createSlice({
         size: null,
         color: null,
         sort: null,
+        searchQuery: null,
       };
       
-      // If there's a search query, keep filtering by that
-      if (state.searchQuery) {
-        const searchTerm = state.searchQuery.toLowerCase();
-        state.filteredItems = state.items.filter(
-          product => 
-            product.name.toLowerCase().includes(searchTerm) || 
-            product.description.toLowerCase().includes(searchTerm) ||
-            product.brand.toLowerCase().includes(searchTerm) ||
-            product.category.toLowerCase().includes(searchTerm)
-        );
-      } else {
-        state.filteredItems = state.items;
-      }
+      state.filteredItems = state.items;
     },
     
     searchProducts: (state, action: PayloadAction<string>) => {
       const searchTerm = action.payload.toLowerCase();
-      state.searchQuery = searchTerm;
+      state.filters.searchQuery = searchTerm || null;
       
       if (!searchTerm) {
-        // If search is cleared, apply only category/other filters
+        // If search is cleared, apply only other filters
         const actionPayload = { type: 'products/setFilter', payload: { filterType: 'category', value: state.filters.category } };
         productSlice.caseReducers.setFilter(state, actionPayload as any);
         return;
@@ -203,7 +197,20 @@ const productSlice = createSlice({
       .addCase(fetchProductsAsync.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.items = action.payload;
-        state.filteredItems = action.payload;
+        
+        // Apply any existing filters to the new items
+        if (Object.values(state.filters).some(filter => filter !== null)) {
+          const actionPayload = { 
+            type: 'products/setFilter', 
+            payload: { 
+              filterType: 'category', 
+              value: state.filters.category 
+            } 
+          };
+          productSlice.caseReducers.setFilter(state, actionPayload as any);
+        } else {
+          state.filteredItems = action.payload;
+        }
       })
       .addCase(fetchProductsAsync.rejected, (state, action) => {
         state.status = 'failed';

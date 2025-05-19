@@ -18,25 +18,82 @@ interface ApiProduct {
   };
 }
 
+// Map API categories to our app categories
+const mapCategory = (apiCategory: string): string => {
+  if (apiCategory.includes('men')) return 'Men';
+  if (apiCategory.includes('women')) return 'Women';
+  if (apiCategory.includes('jewelery')) return 'Accessories';
+  if (apiCategory.includes('electronics')) return 'Electronics';
+  return 'Other';
+};
+
+// Generate appropriate brand name based on product data
+const generateBrand = (apiProduct: ApiProduct): string => {
+  const category = apiProduct.category.toLowerCase();
+  
+  if (category.includes('men')) {
+    return ['Nike', 'Adidas', 'Puma', 'Levi\'s', 'H&M'][Math.floor(Math.random() * 5)];
+  }
+  
+  if (category.includes('women')) {
+    return ['Zara', 'H&M', 'Forever 21', 'Mango', 'Gucci'][Math.floor(Math.random() * 5)];
+  }
+  
+  if (category.includes('jewelery')) {
+    return ['Tiffany', 'Cartier', 'Pandora', 'Swarovski', 'Tanishq'][Math.floor(Math.random() * 5)];
+  }
+  
+  if (category.includes('electronics')) {
+    return ['Apple', 'Samsung', 'Sony', 'LG', 'Bose'][Math.floor(Math.random() * 5)];
+  }
+  
+  return apiProduct.category.split(' ')[0];
+};
+
 // Transform API data to match our app's product structure
 const transformApiProduct = (apiProduct: ApiProduct): Product => {
   // Map categories to ensure they match our app's categories
-  let category = apiProduct.category;
-  if (category.includes('men')) category = 'Men';
-  else if (category.includes('women')) category = 'Women';
-  else if (category.includes('jewelery')) category = 'Accessories';
-  else category = 'Other';
+  const category = mapCategory(apiProduct.category);
 
   // Calculate a random discount for some products
   const hasDiscount = Math.random() > 0.6;
   const discountPercentage = hasDiscount ? Math.floor(Math.random() * 30) + 10 : 0;
   const originalPrice = hasDiscount ? Math.round(apiProduct.price * (100 / (100 - discountPercentage))) : undefined;
 
+  // Generate appropriate sizes based on category
+  const sizes = (() => {
+    if (category === 'Men' || category === 'Women') {
+      return ['S', 'M', 'L', 'XL'].filter(() => Math.random() > 0.3);
+    }
+    if (category === 'Electronics' || category === 'Accessories') {
+      return ['One Size'];
+    }
+    return ['S', 'M', 'L'].filter(() => Math.random() > 0.3);
+  })();
+
+  // Generate appropriate colors based on category
+  const colors = (() => {
+    const allColors = [
+      { name: 'Black', code: '#000000' },
+      { name: 'White', code: '#ffffff' },
+      { name: 'Blue', code: '#0000ff' },
+      { name: 'Red', code: '#ff0000' },
+      { name: 'Green', code: '#008000' },
+      { name: 'Yellow', code: '#ffff00' },
+      { name: 'Pink', code: '#ffc0cb' },
+      { name: 'Purple', code: '#800080' },
+      { name: 'Gray', code: '#808080' },
+    ];
+    
+    // Select 2-4 random colors
+    return allColors.filter(() => Math.random() > 0.7);
+  })();
+
   // Generate random properties needed by our app
   return {
     id: apiProduct.id,
     name: apiProduct.title,
-    brand: apiProduct.category.split(' ')[0],
+    brand: generateBrand(apiProduct),
     category,
     price: Math.round(apiProduct.price * 80), // Convert to rupees for our Myntra clone
     originalPrice: originalPrice ? Math.round(originalPrice * 80) : undefined,
@@ -44,13 +101,8 @@ const transformApiProduct = (apiProduct: ApiProduct): Product => {
     image: apiProduct.image,
     description: apiProduct.description,
     rating: apiProduct.rating.rate,
-    sizes: ['S', 'M', 'L', 'XL'].filter(() => Math.random() > 0.3),
-    colors: [
-      { name: 'Black', code: '#000000' },
-      { name: 'White', code: '#ffffff' },
-      { name: 'Blue', code: '#0000ff' },
-      { name: 'Red', code: '#ff0000' },
-    ].filter(() => Math.random() > 0.5),
+    sizes,
+    colors,
     isTrending: Math.random() > 0.7,
     isNewArrival: Math.random() > 0.7,
   };
@@ -67,6 +119,17 @@ export const fetchProducts = async (): Promise<Product[]> => {
     return apiProducts.map(transformApiProduct);
   } catch (error) {
     console.error('Error fetching products:', error);
+    throw error;
+  }
+};
+
+// Fetch products by category
+export const fetchProductsByCategory = async (category: string): Promise<Product[]> => {
+  try {
+    const allProducts = await fetchProducts();
+    return allProducts.filter(product => product.category === category);
+  } catch (error) {
+    console.error(`Error fetching products for category ${category}:`, error);
     throw error;
   }
 };
