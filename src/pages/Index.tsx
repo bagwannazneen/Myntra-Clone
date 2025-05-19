@@ -1,6 +1,5 @@
 
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { fetchProductsAsync } from '@/lib/store/productSlice';
@@ -10,12 +9,13 @@ import CategorySection from '@/components/home/CategorySection';
 import TrendingProducts from '@/components/home/TrendingProducts';
 import NewArrivals from '@/components/home/NewArrivals';
 import PromoBanner from '@/components/home/PromoBanner';
+import { useAppDispatch } from '@/lib/store';
 
 // Register GSAP ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
 const Index = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   
   // Fetch products when component mounts
   useEffect(() => {

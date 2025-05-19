@@ -14,3 +14,7 @@ export const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+// Export a hook that can be reused to resolve the `dispatch` type
+import { useDispatch } from 'react-redux';
+export const useAppDispatch = () => useDispatch<AppDispatch>();

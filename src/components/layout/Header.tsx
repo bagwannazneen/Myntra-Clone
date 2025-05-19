@@ -1,16 +1,16 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { toggleCart } from '@/lib/store/cartSlice';
 import { toggleTheme, selectIsDarkMode } from '@/lib/store/themeSlice';
 import { selectCartItemsCount } from '@/lib/store/cartSlice';
 import { searchProducts } from '@/lib/store/productSlice';
 import { gsap } from 'gsap';
 import { Sun, Moon, ShoppingCart, Search, Menu, X, ChevronDown, User } from 'lucide-react';
+import { useAppDispatch } from '@/lib/store';
 
 const Header = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isDarkMode = useSelector(selectIsDarkMode);
   const cartItemsCount = useSelector(selectCartItemsCount);

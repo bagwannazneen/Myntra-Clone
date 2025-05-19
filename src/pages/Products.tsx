@@ -1,16 +1,17 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { setFilter, selectProductsStatus, selectProductsError, fetchProductsAsync } from '@/lib/store/productSlice';
 import { gsap } from 'gsap';
 import Layout from '@/components/layout/Layout';
 import ProductGrid from '@/components/products/ProductGrid';
 import ProductFilters from '@/components/products/ProductFilters';
 import { Loader } from 'lucide-react';
+import { useAppDispatch } from '@/lib/store';
 
 const Products = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const pageRef = useRef<HTMLDivElement>(null);
