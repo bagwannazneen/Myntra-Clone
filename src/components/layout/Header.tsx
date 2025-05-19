@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleCart } from '@/lib/store/cartSlice';
 import { toggleTheme, selectIsDarkMode } from '@/lib/store/themeSlice';
@@ -11,6 +11,7 @@ import { Sun, Moon, ShoppingCart, Search, Menu, X, ChevronDown, User } from 'luc
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isDarkMode = useSelector(selectIsDarkMode);
   const cartItemsCount = useSelector(selectCartItemsCount);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -29,7 +30,11 @@ const Header = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(searchProducts(searchTerm));
+    if (searchTerm.trim()) {
+      dispatch(searchProducts(searchTerm));
+      navigate('/products');
+      setSearchOpen(false);
+    }
   };
 
   const toggleSearchBar = () => {
@@ -43,7 +48,15 @@ const Header = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    dispatch(searchProducts(e.target.value));
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      dispatch(searchProducts(searchTerm));
+      navigate('/products');
+      setSearchOpen(false);
+    }
   };
 
   useEffect(() => {
@@ -117,7 +130,7 @@ const Header = () => {
                   searchOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'
                 }`}
               >
-                <form onSubmit={handleSearch} className="flex items-center bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg overflow-hidden shadow-lg">
+                <form onSubmit={handleSearchSubmit} className="flex items-center bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg overflow-hidden shadow-lg">
                   <input
                     ref={searchInputRef}
                     type="text"

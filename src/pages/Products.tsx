@@ -1,18 +1,28 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setFilter } from '@/lib/store/productSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilter, selectProductsStatus, selectProductsError, fetchProductsAsync } from '@/lib/store/productSlice';
 import { gsap } from 'gsap';
 import Layout from '@/components/layout/Layout';
 import ProductGrid from '@/components/products/ProductGrid';
 import ProductFilters from '@/components/products/ProductFilters';
+import { Loader } from 'lucide-react';
 
 const Products = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const pageRef = useRef<HTMLDivElement>(null);
+  const status = useSelector(selectProductsStatus);
+  const error = useSelector(selectProductsError);
+  
+  // Fetch products if needed
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchProductsAsync());
+    }
+  }, [status, dispatch]);
   
   // Parse query parameters from URL
   useEffect(() => {
@@ -50,6 +60,38 @@ const Products = () => {
     // Scroll to top on page load
     window.scrollTo(0, 0);
   }, []);
+
+  if (status === 'loading') {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="flex flex-col items-center">
+            <Loader className="h-8 w-8 animate-spin" />
+            <p className="mt-2">Loading products...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (status === 'failed') {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center">
+            <h3 className="text-2xl font-medium text-red-500 mb-2">Error loading products</h3>
+            <p className="mb-4">{error || 'Failed to load products. Please try again later.'}</p>
+            <button
+              onClick={() => dispatch(fetchProductsAsync())}
+              className="bg-myntra-purple hover:bg-myntra-purple-dark text-white px-4 py-2 rounded"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
