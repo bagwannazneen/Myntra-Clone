@@ -69,34 +69,7 @@ const Footer = () => {
           </div>
 
           {/* Newsletter */}
-          <div>
-            <h3 className="font-semibold text-lg mb-4">Stay Connected</h3>
-            <p className="text-muted-foreground mb-4">Subscribe to our newsletter for updates on new arrivals, offers, and more</p>
-            <form className="flex">
-              <input 
-                type="email" 
-                placeholder="Your email" 
-                className="w-full px-4 py-2 rounded-l-lg border dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button 
-                type="submit" 
-                className="bg-primary text-white px-4 py-2 rounded-r-lg font-medium hover:bg-myntra-purple-dark transition-colors"
-              >
-                Subscribe
-              </button>
-            </form>
-            <div className="mt-4 flex space-x-4">
-              <SafeLink to="#" className="text-muted-foreground hover:text-primary transition-colors">
-                Facebook
-              </SafeLink>
-              <SafeLink to="#" className="text-muted-foreground hover:text-primary transition-colors">
-                Instagram
-              </SafeLink>
-              <SafeLink to="#" className="text-muted-foreground hover:text-primary transition-colors">
-                Twitter
-              </SafeLink>
-            </div>
-          </div>
+          
         </div>
 
         <div className="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800">
